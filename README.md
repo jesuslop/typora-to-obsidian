@@ -5,7 +5,7 @@ Automate some tasks for importing Typora created markdown files with math into O
 
 A quick personal script I made to migrate my Typora-created, math laden markdown files to [Obsidian](https://obsidian.md/).
 
-It offers mitigations for this problems:
+It offers mitigations for these problems:
 
 * No suport of HTML elements `<img src="...">` in markdown source with target a relative path
 * MathJax years-old bug not honoring `\\` line breaks in math expressions
@@ -16,7 +16,7 @@ It offers mitigations for this problems:
 
 ## Images
 
-The script will warn an ignore remote images. Obsidian can't handle <img src...> elements with relative paths. This scrip replaces elements
+The script will warn and ignore remote images. Obsidian can't handle <img src...> elements with relative paths. This script replaces elements
 
 ```
 <img src="path" ... style="zoom: 30%;"...>
@@ -28,7 +28,7 @@ with
 ```
 that opens in Obsidian.
 
-Zoom is parsed and applied to actual size of the image from the image file.
+When present zoom is parsed and applied to actual size of the image from the image file.
 
 If you want your images centered, you can add the CSS snippet
 
@@ -39,14 +39,14 @@ img { display:block; margin-left: auto; margin-right: auto; }
 
 ## MathJax line breaks
 
-Obsidian renders math with MathJax so it suffers [this](https://github.com/mathjax/MathJax/issues/2312) 2019 bug. The mitigation here is to enclose all displayed math expressions `($$ ... $$)` in a `gathered` environment, so the expressions is transformed into
+Obsidian renders math with MathJax so it suffers [this](https://github.com/mathjax/MathJax/issues/2312) 2019 bug. The mitigation here is to enclose all displayed math expressions `($$ ... $$)` in a `gathered` environment, so an expression is transformed into
 
 ```
 $$\begin{gathered}
 ...
 \end{gathered}$$
 ```
-As released, the script does this to *all* such expressions. Users are invited to fork and enhance it so the fix only applies to expressions containing `\\` line breaks.
+As released, the script does this to *all* such expressions. Users are invited to fork and enhance the script so the fix only applies to expressions containing `\\` line breaks.
 
 ## No math multiline expression support inside quotations in Obsidian
 
@@ -55,12 +55,13 @@ Actually Obsidian doesn't support multiline equations in quotations such as this
 ```
 >
 > $$ 
-> e = mc^2
+> e = mc^2 \\
 > f = ma
 > $$
 >
+```
 
-The mitigation is to transform the quotation into a titleless admonition of type **cite**
+The mitigation the script does is to transform the quotation into a titleless admonition of type **cite**
 
 ````
 ```ad-cite
@@ -78,14 +79,13 @@ If you want citations be of same background color as the main text you can add t
 
 ```
 .callout[data-callout="cite"] { 
-	--callout-icon: Quote; 
 	background-color: var(--background-primary);
 }
 ```
 
 ## Labels
 
-In math expressions, labels (`\label{...}` latex commands) break Obsidian math expression parser. That unfortunately breaks the `label`,`tag`,`eqref` latex command associations. The script mitigation is to wholly remove `label`s, and only one `tag` command in an expression is taken into account and placed a the end of the expression. Users have to manually have to fix broken `eqref` mentions. 
+In math expressions, labels (`\label{...}` latex commands) break Obsidian math expression parser. That unfortunately breaks the `label`,`tag`,`eqref` latex command associations. The script mitigation is to wholly remove `label`s, and only one `tag` command in an expression is taken into account and placed a the end of the expression. Users have to manually fix broken `eqref` mentions. 
 
 
 # Installing
@@ -100,22 +100,44 @@ pip install pillow
 
 # Running
 
-Before running, macking up your markup files directory is recommended.
+Before running, backing up your markup files directory is recommended.
 
 Run the command with
 
 ```
-python typora-to-obsidian <directory>
+python typora-to-obsidian.py <directory>
 ```
 
-The script will walk that directory and subdirectories recursively looking for markdown `.md` files, for instance `name.md`, process it, and produce as result a file suffixed `.obsidian.md`. For instance, `name.obsidian.md`.
+The script will walk that directory and subdirectories recursively looking for markdown `.md` files. Each file, for instance `name.md`, is processed, and as result a sidecar file suffixed `.obsidian.md` is created (or overwritten). For instance, `name.obsidian.md`.
 
-With this naming scheme, the script is _idempotent_: The results of running it once or several times are in theory the same. One create an Obsidian vault at the base directory and compare original and transformed results and tweak the script as needed. On the other hand, once one is satisfied with the results, some pesky renaming can be needed that the script does not do.
+With this naming scheme, the script is _idempotent_: The results of running it once or several times are in theory the same. One can create an Obsidian vault at the base directory and compare original and transformed results and tweak the script if needed. On the other hand, once one is satisfied with the results, some pesky renaming can be needed that the script does not do.
+
+# Bonus CSS snippets
+
+Script apart, the following CSS snippets can be of use to someone. 
+
+```
+/* Justify paragraphs */
+
+.markdown-preview-view p {
+	text-align: justify;
+	text-justify: inter-word;
+}
+
+.markdown-source-view.mod-cm6 .cm-line {
+	text-align: justify;
+	text-justify: inter-word;
+}
+
+/* Increase MaxJax size */
+
+mjx-math {
+  font-size: 105% !important;
+}
+```
 
 # Disclaimer
 
-Back your content directory befor to appling this script. Software is provided AS IS, no support is guaranteed and issues/complaints can be discretionally ignored.
+Back your content directory before applying this script. Software is provided AS IS, no support is guaranteed and issues/complaints can be discretionally ignored.
 
-
-
-
+This script is just my quick stab at this translating problem, providing crude solutions based on personal content and tradeoffs. Feel free to make it better.
