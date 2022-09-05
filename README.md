@@ -90,6 +90,8 @@ In math expressions, labels (`\label{...}` latex commands) break Obsidian math e
 
 # Installing
 
+Get `typora-to-obsidian.py`
+
 Install a Python environment. 
 
 If needed install the Pillow package
