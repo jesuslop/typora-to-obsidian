@@ -16,7 +16,7 @@ It offers mitigations for these problems:
 
 ## Images
 
-The script will warn and ignore remote images. Obsidian can't handle <img src...> elements with relative paths. This script replaces elements
+The script will warn and ignore remote images. Obsidian can't handle `<img src...>` elements with relative paths. This script replaces elements
 
 ```
 <img src="path" ... style="zoom: 30%;"...>
